@@ -18,7 +18,7 @@
         <div @click="append('2')" class="btn">2</div>
         <div @click="append('3')" class="btn">3</div>
         <div @click="plus" class="op">+</div>
-        <div @click="append('0')" class="zero">0</div>
+        <div @click="ze" class="zero">0</div>
         <div @click="dot" class="btn">.</div>
         <div @click="equal" class="op">=</div>
     </div>
@@ -32,6 +32,7 @@
                 current:"",
                 answer:"",
                 opClick:true
+                
             }
         },
         methods:{
@@ -46,11 +47,13 @@
                 if(this.current != ""){
                 this.current = this.current.charAt(0)=== "-" ?
                     this.current.slice(1) : `-${this.current}`;
+                    
                 }
             },
             percent(){
                 if(this.current != ""){
                 this.current = `${parseFloat(this.current)/100}`;
+                
                 }
             },
             append(num){
@@ -59,10 +62,12 @@
                     this.opClick=false;
                 }
                 this.current =  `${this.current}${num}`;
+               
             },
             dot(){
                 if(this.current.indexOf('.')===-1){
                     this.append('.');
+                    
                 }
             },
             addcal(op){
@@ -70,6 +75,15 @@
                     this.calculation +=  `${this.current}${op}`;
                     this.current="";
                     this.opClick=true;
+                    
+                }
+            },
+            ze(){
+                if(this.current == ""){
+                    this.append('0')
+                }
+                else if(this.current.includes('.') ) {
+                    this.append('0')
                 }
             },
             divide(){
@@ -87,17 +101,21 @@
             equal(){
                 if(this.opClick===false){
                     this.answer= eval(this.calculation+this.current);
+                    
+                    
                 }
             },
+            
         }
+    
     }
 </script>
-
+  
 <style scoped>
-.calculator{
+.calculator{ 
     border: 1px solid black;
     padding: 20px;
-    margin: 0 auto;
+    margin: 0 auto; 
     width: 400px;
     font-size: 40px;
     display: grid;
