@@ -40,7 +40,8 @@
                 //opclick เช็คว่ากดopไปรึยัง
                 openBracket:false,
                 closeBracket:false,
-                baseval:""
+                baseval:"",
+                number:['.','9','8','5','7','6','5','4','3','2','1','(']
             }
         },
         methods:{
@@ -99,8 +100,10 @@
                 if(this.current == ""){
                     this.append('0')
                 }
-                else if(this.current.includes('.')|| this.current.includes('(')||this.current.includes('7')|| this.current.includes('6')|| this.current.includes('5')|| this.current.includes('4')|| this.current.includes('3')|| this.current.includes('2')|| this.current.includes('1') ) {
+                else if(this.number.some(el=>this.current.includes(el))) {
                     this.append('0')
+                    //this.current.includes('.')|| this.current.includes('(')||this.current.includes('7')|| this.current.includes('6')|| this.current.includes('5')|| this.current.includes('4')|| this.current.includes('3')|| this.current.includes('2')|| this.current.includes('1')
+                    //this.number.some(el=>this.current.includes(el)
                 }
             },
             divide(){
@@ -116,7 +119,7 @@
                 this.addcal('+')
             },
             equal(){
-                if(this.opClick===false && (this.current.indexOf('()')==-1) && (this.calculation.indexOf('()')==-1)){
+                if(this.opClick===false && (this.current.indexOf('()')==-1) && (this.calculation.indexOf('()')==-1) && (this.calculation+this.current).includes('(00')==false){
                     this.answer= eval(this.calculation+this.current);
                     this.baseval = this.answer;
                     //evalทั้งตัวcalculationกับcurrentพร้อมกันแล้วเก็บค่าเข้าanswer
