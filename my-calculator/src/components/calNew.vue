@@ -133,10 +133,15 @@
                     this.answer= 0;
                     this.baseval = 0;
                 }*/
-                try{ this.answer= eval(this.calculation+this.current);
-                    this.baseval = this.answer;}
+                try{ 
+                    this.answer= eval(this.calculation+this.current);
+                    this.baseval = this.answer;
+                    if(eval(this.calculation+this.current)== 0 ){this.answer='0'}
+                }
+                    
                 catch(er){ this.clear()
                     this.answer= "Error";}
+    
             },
             decTobase(base){
                 this.answer = this.baseval.toString(base)
