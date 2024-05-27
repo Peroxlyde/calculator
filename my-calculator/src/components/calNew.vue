@@ -91,7 +91,7 @@
                     this.opClick=true;
                     //สำหรับเพิ่มตัวoperator เช็คว่ากดopไปรึยัง ถ้าไม่ก็ เก็บค่าcurrentพร้อมตัวopเข้าไปยังcalculation ล้วก็จะclearตัวในcurrentแล้วเปลี่ยนopclickเป็นtrue
                 }
-                else if(this.opClick === true){
+                else if(this.opClick === true && this.current != ''){
                     this.calculation = this.calculation.slice(0,-1)
                     this.calculation = `${this.calculation}${op}`;
                 }
@@ -102,8 +102,8 @@
                 }
                 else if(this.number.some(el=>this.current.includes(el))) {
                     this.append('0')
-                    //this.current.includes('.')|| this.current.includes('(')||this.current.includes('7')|| this.current.includes('6')|| this.current.includes('5')|| this.current.includes('4')|| this.current.includes('3')|| this.current.includes('2')|| this.current.includes('1')
-                    //this.number.some(el=>this.current.includes(el)
+                    /*this.current.includes('.')|| this.current.includes('(')||this.current.includes('7')|| this.current.includes('6')|| this.current.includes('5')|| this.current.includes('4')|| this.current.includes('3')|| this.current.includes('2')|| this.current.includes('1')
+                    this.number.some(el=>this.current.includes(el)*/
                 }
             },
             divide(){
@@ -119,7 +119,7 @@
                 this.addcal('+')
             },
             equal(){
-                if(this.opClick===false && (this.current.indexOf('()')==-1) && (this.calculation.indexOf('()')==-1) && (this.calculation+this.current).includes('(00')==false){
+                /*if(this.opClick===false && (this.current.indexOf('()')==-1) && (this.calculation.indexOf('()')==-1) && (this.calculation+this.current).includes('(00')==false){
                     this.answer= eval(this.calculation+this.current);
                     this.baseval = this.answer;
                     //evalทั้งตัวcalculationกับcurrentพร้อมกันแล้วเก็บค่าเข้าanswer
@@ -129,6 +129,14 @@
                     this.clear()
                     this.answer= "Error";
                 }
+                if(eval(this.calculation+this.current)==0){
+                    this.answer= 0;
+                    this.baseval = 0;
+                }*/
+                try{ this.answer= eval(this.calculation+this.current);
+                    this.baseval = this.answer;}
+                catch(er){ this.clear()
+                    this.answer= "Error";}
             },
             decTobase(base){
                 this.answer = this.baseval.toString(base)
