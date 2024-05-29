@@ -1,7 +1,7 @@
 <template>
     <div class="calculator">
         <div class="answer">{{answer||""}}</div>
-        <div class="display">{{calculation+current}}</div>
+        <div class="display">{{current}}</div>
         <div @click="clear" class="op">C</div>
         <div @click="opBrac" class="bracket">( </div>
         <div @click="clBrac" class="bracket">) </div>
@@ -32,7 +32,7 @@
     export default {
         data(){
             return{
-                calculation:"",
+                ///calculation:"",
                 current:"",
                 answer:"",
                 opClick:true,
@@ -41,25 +41,28 @@
                 openBracket:false,
                 closeBracket:false,
                 baseval:"",
-                number:['.','9','8','5','7','6','5','4','3','2','1','(']
+                number:['.','9','8','5','7','6','5','4','3','2','1','('],
+                dotclick:false,
+                numclick:false
             }
         },
         methods:{
             clear(){
                 this.current="";
                 this.answer="";
-                this.calculation="";
                 this.opClick=true;
                 this.openBracket=false;
                 this.closeBracket=false;
                 this.baseval="";
-
+                this.dotclick=false;
+                this.numclick=false
             },
             opBrac(){
-                if((this.current=="") && !(this.openBracket)){
-                    this.append('(');
+                if((this.numclick == false) && !(this.openBracket)){
+                    this.current = `${this.current}${'('}`;
                     this.openBracket=true;
                     this.closeBracket=false;
+                    this.opClick=false;
                 }
             },
             clBrac(){
@@ -71,39 +74,48 @@
                 }
             },
             append(num){
-                if(this.opClick){
+                /*if(this.opClick){
                     this.current="";
                     this.opClick=false;
-                }
+                }*/
                 this.current =  `${this.current}${num}`;
+                this.opClick=false;
+                this.numclick =true;
                 //เช็คว่ากดopไปรึยังถ้ากดแล้วก็จะclearตัวในcurrentแล้วเปลี่ยนopclickเป็นfalse จึงค่อยเอาตัวที่เรากดไปต่อท้ายตัวที่มีอยู่
             },
             dot(){
-                if(this.current.indexOf('.')===-1){
-                    this.append('.');
+                if(this.dotclick==false && this.current[this.current.length-1]!=')'){
+                    this.current =  `${this.current}${'.'}`;
+                    this.dotclick = true;
+                    this.numclick =true;
                     //เช็คว่ามี.รึ้ปล่าถ้าไม่มีให้เพิ่ม.ไปได้
                 }
             },
             addcal(op){
-                if(this.opClick === false){
-                    this.calculation +=  `${this.current}${op}`;
-                    this.current="";
+               if(this.opClick === false && this.current[this.current.length-1]!='('){
+                    this.current=  `${this.current}${op}`;
+                    //this.current="";
                     this.opClick=true;
+                    this.dotclick = false;
+                    this.numclick = false;
                     //สำหรับเพิ่มตัวoperator เช็คว่ากดopไปรึยัง ถ้าไม่ก็ เก็บค่าcurrentพร้อมตัวopเข้าไปยังcalculation ล้วก็จะclearตัวในcurrentแล้วเปลี่ยนopclickเป็นtrue
                 }
                 else if(this.opClick === true && this.current != ''){
-                    this.calculation = this.calculation.slice(0,-1)
-                    this.calculation = `${this.calculation}${op}`;
+                    this.current = this.current.slice(0,-1)
+                    this.current = `${this.current}${op}`;
                 }
             },
             ze(){
                 if(this.current == ""){
                     this.append('0')
                 }
-                else if(this.number.some(el=>this.current.includes(el))) {
+                else if(this.number.some(el=>this.current.includes(el))&&(this.current[this.current.length-1]!='0')) {
                     this.append('0')
                     /*this.current.includes('.')|| this.current.includes('(')||this.current.includes('7')|| this.current.includes('6')|| this.current.includes('5')|| this.current.includes('4')|| this.current.includes('3')|| this.current.includes('2')|| this.current.includes('1')
                     this.number.some(el=>this.current.includes(el)*/
+                }
+                else if(this.current[this.current.length-1]=='0.'){
+                    this.append('0')
                 }
             },
             divide(){
@@ -134,9 +146,9 @@
                     this.baseval = 0;
                 }*/
                 try{ 
-                    this.answer= eval(this.calculation+this.current);
+                    this.answer= eval(this.current);
                     this.baseval = this.answer;
-                    if(eval(this.calculation+this.current)== 0 ){this.answer='0'}
+                    if(eval(this.current)== 0 ){this.answer='0'}
                 }
                     
                 catch(er){ this.clear()
