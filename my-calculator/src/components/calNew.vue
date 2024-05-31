@@ -20,17 +20,17 @@
         <div @click="plus" class="op">+</div>
         <div @click="ze" class="zero">0</div>
         <div @click="dot" class="btn">.</div>
-        <div @click="equal" class="op">=</div>
         <div @click="append('a')" class="btn">a</div>
+        <div @click="equal" class="op">=</div>
         <div @click="append('b')" class="btn">b</div>
         <div @click="append('c')" class="btn">c</div>
         <div @click="append('d')" class="btn">d</div>
+        <div @click="to2" class="op">Bin</div>
         <div @click="append('e')" class="btn">e</div>
         <div @click="append('f')" class="btn">f</div>
-        <div @click="to2" class="op">Bin</div>
         <div @click="to8" class="op">Oct</div>
         <div @click="to10" class="op">Dec</div>
-        <div @click="to16" class="op">Hex</div>
+        <div @click="to16" class="op h">Hex</div>
     </div>
 </template>
 
@@ -50,11 +50,8 @@
                 number:['.','9','8','5','7','6','5','4','3','2','1','('],
                 dotclick:false,
                 numclick:false,
-                base2click:false,
-                base8click:false,
-                base10click:false,
-                base16click:false,
                 base1:10,
+                base2:10,
                 evaluate:[],
                 evalclick:false
             }
@@ -69,13 +66,11 @@
                 this.baseval="";
                 this.dotclick=false;
                 this.numclick=false;
-                this.base2click=false;
-                this.base8click=false;
-                this.base10click=false;
-                this.base16click=false;
                 this.calculation=[];
                 this.base1=10;
+                this.base2=10;
                 this.evalclick=false
+                this.evaluate=[];
             },
             opBrac(){
                 if((this.numclick == false) && !(this.openBracket)){
@@ -139,6 +134,7 @@
                     this.opClick=true;
                     this.dotclick = false;
                     this.numclick = false;
+                    this.evalclick = false;
                     //สำหรับเพิ่มตัวoperator เช็คว่ากดopไปรึยัง ถ้าไม่ก็ เก็บค่าcurrentพร้อมตัวopเข้าไปยังcalculation ล้วก็จะclearตัวในcurrentแล้วเปลี่ยนopclickเป็นtrue
                 }
                 else if(this.opClick === true){
@@ -186,26 +182,28 @@
                     this.answer= 0;
                     this.baseval = 0;
                 }*/
-                if(this.evalclick==false){
-                    this.evaluate=this.calculation
+                //if(this.evalclick==false){
+                    
                 try{
-                    //this.answer =this.evaluate.join("")+this.current
+                    this.evaluate=Array.from(this.calculation)
                     for(let x = 0; x<this.evaluate.length;x++){
                     if (this.evaluate[x]!='('&& this.evaluate[x]!=')'&& this.evaluate[x]!='+'&& this.evaluate[x]!='-'&& this.evaluate[x]!='*'&& this.evaluate[x]!='/') {
                         this.evaluate[x]=parseInt(this.evaluate[x],this.base1).toString(10)
                         }
                     }
                     //this.answer =this.evaluate.join("")+this.current
+                    //this.answer =this.evaluate.join("")+this.current
                     //this.answer= eval(this.evaluate.join("")+parseInt(this.current,this.base1).toString(10));
                     this.answer= parseInt(eval(this.evaluate.join("")+parseInt(this.current,this.base1).toString(10)),10).toString(this.base1);
+                    this.baseval= this.answer
+                    this.base2=this.base1
                     if(eval(this.evaluate.join("")+parseInt(this.current,this.base1).toString(10))== 0 ){this.answer='0'}
-                    this.baseval=this.answer
                 }
                     
                 catch(er){ this.clear()
                     this.answer= "Error";}
                     this.evalclick=true;
-                }
+                //}
     
             },
             /*baseTobase(base){
@@ -216,10 +214,6 @@
                 }
             },*/
             to2(){
-                this.base2click = true;
-                this.base8click = false;
-                this.base10click = false;
-                this.base16click = false;
                 if(this.calculation!=[]){
                 for(let i = 0; i<this.calculation.length;i++){
                     if (this.calculation[i]!='('&& this.calculation[i]!=')'&& this.calculation[i]!='+'&& this.calculation[i]!='-'&& this.calculation[i]!='*'&& this.calculation[i]!='/') {
@@ -228,40 +222,41 @@
                 }}
                 if(this.current!=''){
                 this.current=parseInt(this.current,this.base1).toString(2)}
+                //this.evaluate=this.calculation
+                if(this.answer!=''){
+                this.answer= parseInt(this.baseval,this.base2).toString(2)}
                 this.base1 = 2
                 
             },
             to8(){
-                this.base2click = false;
-                this.base8click = true;
-                this.base10click = false;
-                this.base16click = false;
+                if(this.calculation!=[]){
                 for(let i = 0; i<this.calculation.length;i++){
                     if (this.calculation[i]!='('&& this.calculation[i]!=')'&& this.calculation[i]!='+'&& this.calculation[i]!='-'&& this.calculation[i]!='*'&& this.calculation[i]!='/') {
                         this.calculation[i]=parseInt(this.calculation[i],this.base1).toString(8)
                     }
-                }
-                this.current=parseInt(this.current,this.base1).toString(8)
+                }}
+                if(this.current!=''){
+                this.current=parseInt(this.current,this.base1).toString(8)}
+                //this.evaluate=this.calculation
+                if(this.answer!=''){
+                this.answer= parseInt(this.baseval,this.base2).toString(8)}
                 this.base1 = 8
             },
             to10(){
-                this.base2click = false;
-                this.base8click = false;
-                this.base10click = true;
-                this.base16click = false;
+                if(this.calculation!=[]){
                 for(let i = 0; i<this.calculation.length;i++){
                     if (this.calculation[i]!='('&& this.calculation[i]!=')'&& this.calculation[i]!='+'&& this.calculation[i]!='-'&& this.calculation[i]!='*'&& this.calculation[i]!='/') {
                         this.calculation[i]=parseInt(this.calculation[i],this.base1).toString(10)
                     }
-                }
-                this.current=parseInt(this.current,this.base1).toString(10)
+                }}
+                if(this.current!=''){
+                this.current=parseInt(this.current,this.base1).toString(10)}
+                //this.evaluate=this.calculation
+                if(this.answer!=''){
+                this.answer= parseInt(this.baseval,this.base2).toString(10)}
                 this.base1 = 10
             },
             to16(){
-                this.base2click = false;
-                this.base8click = false;
-                this.base10click = false;
-                this.base16click = true;
                 if(this.calculation!=[]){
                 for(let i = 0; i<this.calculation.length;i++){
                     if (this.calculation[i]!='('&& this.calculation[i]!=')'&& this.calculation[i]!='+'&& this.calculation[i]!='-'&& this.calculation[i]!='*'&& this.calculation[i]!='/') {
@@ -270,8 +265,10 @@
                 }}
                 if(this.current!=''){
                 this.current=parseInt(this.current,this.base1).toString(16)}
+                //this.evaluate=this.calculation
+                if(this.answer!=''){
+                this.answer= parseInt(this.baseval,this.base2).toString(16)}
                 this.base1 = 16
-                //his.baseTobase(16)
             }
         }
         // margin: 0 auto = top and bottom margins are 0  right and left margins are auto
@@ -301,8 +298,8 @@
     margin-bottom: 10px;
     border-bottom: 1px solid black;
 }
-.zero{
-    grid-column: 1/3;
+.h{
+    grid-column: 1/5;
     
 }
 .btn,.zero{
