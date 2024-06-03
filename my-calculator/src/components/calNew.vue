@@ -1,6 +1,6 @@
 <template>
     <div class="calculator">
-        <div class="answer">{{answer||""}}</div>
+        <div class="answer">{{answer||""/*calculation*/}}</div>
         <div class="display">{{calculation.join("") + current}}</div>
         <div @click="clear" class="op">C</div>
         <div @click="opBrac" class="bracket">( </div>
@@ -83,7 +83,10 @@
             },
             clBrac(){
                 if(this.openBracket && !(this.closeBracket) && (this.current !="" )){
+                this.calculation.push(this.current)
                 this.calculation.push(')')
+                this.current="";
+                this.opClick=false;
                 //this.current = `${this.current}${')'}`;
                 this.closeBracket=true;
                 this.openBracket=false;
@@ -127,8 +130,9 @@
                 }
             },
             addcal(op){
-               if(this.opClick === false && this.current[this.current.length-1]!='('&& this.current!=""){
-                    this.calculation.push(this.current)
+               if(this.opClick === false && this.current[this.current.length-1]!='('/*&& this.current!=""*/){
+                if(this.current!=''){
+                    this.calculation.push(this.current)}
                     this.calculation.push(op)
                     this.current="";
                     this.opClick=true;
@@ -137,7 +141,7 @@
                     this.evalclick = false;
                     //สำหรับเพิ่มตัวoperator เช็คว่ากดopไปรึยัง ถ้าไม่ก็ เก็บค่าcurrentพร้อมตัวopเข้าไปยังcalculation ล้วก็จะclearตัวในcurrentแล้วเปลี่ยนopclickเป็นtrue
                 }
-                else if(this.opClick === true){
+                else if(this.opClick === true&& this.current!=""){
                     this.calculation.pop()
                     this.calculation.push(op)
                 }
@@ -192,11 +196,16 @@
                         }
                     }
                     //this.answer =this.evaluate.join("")+this.current
-                    //this.answer =this.evaluate.join("")+this.current
+                    //this.answer =this.evaluate.join("")
                     //this.answer= eval(this.evaluate.join("")+parseInt(this.current,this.base1).toString(10));
+                    if(this.current!=''){
                     this.answer= parseInt(eval(this.evaluate.join("")+parseInt(this.current,this.base1).toString(10)),10).toString(this.base1);
                     this.baseval= this.answer
-                    this.base2=this.base1
+                    this.base2=this.base1}
+                    else if(this.current ==''){
+                    this.answer= parseInt(eval(this.evaluate.join("")),10).toString(this.base1);
+                    this.baseval= this.answer
+                    this.base2=this.base1}
                     if(eval(this.evaluate.join("")+parseInt(this.current,this.base1).toString(10))== 0 ){this.answer='0'}
                 }
                     
